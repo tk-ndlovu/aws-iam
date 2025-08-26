@@ -38,6 +38,20 @@ variable "additional_poweruser_policy_arns" {
 }
 
 
+variable "poweruser_policy_names" {
+  type        = list(string)
+  description = "List of custom policy identifiers (e.g., compute_services_permission_policy) to attach to the power user permission set."
+  default     = []
+}
+
+
+variable "policy_variables" {
+  type        = map(any)
+  description = "Map of template variables to render custom IAM policies. Values here complement default team placeholders."
+  default     = {}
+}
+
+
 variable "sso_instance_arn" {
   type        = string
   description = "The ARN of the AWS SSO (IAM Identity Center) instance used to create the permission sets."

@@ -9,6 +9,8 @@ module "sso_permission_sets" {
   aws_accounts                     = each.value.aws_accounts
   permission_sets                  = local.managed_permissions
   additional_poweruser_policy_arns = lookup(each.value, "poweruser_policy_arns", [])
+  poweruser_policy_names           = lookup(each.value, "poweruser_policy_names", [])
+  policy_variables                 = lookup(each.value, "policy_variables", {})
   sso_instance_arn                 = tolist(data.aws_ssoadmin_instances.azure_ad.arns)[0]
   tags = merge(
     local.tags,
