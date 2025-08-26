@@ -31,6 +31,12 @@ variable "permission_sets" {
   description = "Map of permission sets with optional AWS managed policy ARN or null for custom ones"
 }
 
+variable "additional_poweruser_policy_arns" {
+  type        = list(string)
+  description = "List of additional AWS managed policy ARNs to attach to the power user permission set."
+  default     = []
+}
+
 
 variable "sso_instance_arn" {
   type        = string
