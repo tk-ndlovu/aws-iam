@@ -6,6 +6,8 @@ output "instance_arn" {
   value = var.sso_instance_arn
 }
 
+
 output "policy_arns" {
   value = { for k, p in aws_iam_policy.this : k => p.arn }
 }
+
