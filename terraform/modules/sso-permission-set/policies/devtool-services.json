@@ -1,0 +1,155 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "CodeBuild",
+        "Effect": "${DevToolsPermissions}",
+        "Action": [
+          "codebuild:BatchGet*",
+          "codebuild:List*",
+          "codebuild:PersistOAuthToken"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "CodeBuildConditional",
+        "Effect": "${DevToolsPermissions}",
+        "Action": [
+          "codebuild:BatchDeleteBuilds",
+          "codebuild:CreateProject",
+          "codebuild:DeleteProject",
+          "codebuild:StartBuild",
+          "codebuild:StopBuild",
+          "codebuild:UpdateProject"
+        ],
+        "Resource": "arn:aws:codebuild:*:${AccountId}:project/*${TeamCode}*",
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:RequestTag/TeamCode": "${TeamCode}",
+            "aws:RequestTag/TeamName": "${TeamName}"
+          }
+        }
+      },
+      {
+        "Sid": "AllowAll",
+        "Effect": "${DevToolsPermissions}",
+        "Action": [
+          "codedeploy:ContinueDeployment",
+          "codedeploy:DeregisterOnPremisesInstance",
+          "codedeploy:PutLifecycleEventHookExecutionStatus",
+          "codedeploy:StopDeployment",
+          "codedeploy:CreateApplication",
+          "codedeploy:CreateDeployment",
+          "codedeploy:CreateDeploymentGroup",
+          "codedeploy:CreateDeploymentConfig",
+          "codedeploy:Delete*",
+          "codedeploy:Update*",
+          "codedeploy:RegisterApplicationRevision"
+        ],
+        "Resource": "arn:aws:codedeploy:*:${AccountId}:*:*${TeamCode}*",
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:RequestTag/TeamCode": "${TeamCode}",
+            "aws:RequestTag/TeamName": "${TeamName}"
+          }
+        }
+      },
+      {
+        "Sid": "AllowCodePipeline",
+        "Effect": "${DevToolsPermissions}",
+        "Action": [
+          "codepipeline:AcknowledgeJob",
+          "codepipeline:AcknowledgeThirdPartyJob",
+          "codepipeline:PollForThirdPartyJobs",
+          "codepipeline:PutApprovalResult",
+          "codepipeline:PutJobFailureResult",
+          "codepipeline:PutJobSuccessResult",
+          "codepipeline:PutThirdPartyJobFailureResult",
+          "codepipeline:PutThirdPartyJobSuccessResult"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "AllowCodePipelineConditional",
+        "Effect": "${DevToolsPermissions}",
+        "Action": [
+          "codepipeline:CreatePipeline",
+          "codepipeline:DeletePipeline",
+          "codepipeline:DisableStageTransition",
+          "codepipeline:EnableStageTransition",
+          "codepipeline:PutActionRevision",
+          "codepipeline:RetryStageExecution",
+          "codepipeline:StartPipelineExecution",
+          "codepipeline:UpdatePipeline"
+        ],
+        "Resource": "arn:aws:codepipeline:*:${AccountId}:*${TeamCode}*",
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:RequestTag/TeamCode": "${TeamCode}",
+            "aws:RequestTag/TeamName": "${TeamName}"
+          }
+        }
+      },
+      {
+        "Sid": "AllowWebhooks",
+        "Effect": "${DevToolsPermissions}",
+        "Action": [
+          "codepipeline:CreateCustomActionType",
+          "codepipeline:DeleteCustomActionType",
+          "codepipeline:DeleteWebhook",
+          "codepipeline:DeregisterWebhookWithThirdParty",
+          "codepipeline:PollForJobs",
+          "codepipeline:PutWebhook",
+          "codepipeline:RegisterWebhookWithThirdParty"
+        ],
+        "Resource": [
+          "arn:aws:codepipeline:*:${AccountId}:*${TeamCode}*",
+          "arn:aws:codepipeline:*:${AccountId}:*:*${TeamCode}*/*"
+        ],
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:RequestTag/TeamCode": "${TeamCode}",
+            "aws:RequestTag/TeamName": "${TeamName}"
+          }
+        }
+      },
+      {
+        "Sid": "AllowWellArch",
+        "Effect": "${WellArchitectedPermissions}",
+        "Action": [
+          "wellarchitected:*"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "AllowXray",
+        "Effect": "${AllowXrayPermissions}",
+        "Action": [
+          "xray:PutTraceSegments",
+          "xray:PutTelemetryRecords"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "AllowXrayConditional",
+        "Effect": "${AllowXrayPermissions}",
+        "Action": [
+          "xray:Create*",
+          "xray:Delete*",
+          "xray:Update*"
+        ],
+        "Resource": [
+          "arn:aws:xray:*:${AccountId}:group/*${TeamCode}*",
+          "arn:aws:xray:*:${AccountId}:group/*${TeamCode}*/*",
+          "arn:aws:xray:*:${AccountId}:sampling-rule/*${TeamCode}*"
+        ],
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:RequestTag/TeamCode": "${TeamCode}",
+            "aws:RequestTag/TeamName": "${TeamName}"
+          }
+        }
+      }
+    ]
+  }
+  

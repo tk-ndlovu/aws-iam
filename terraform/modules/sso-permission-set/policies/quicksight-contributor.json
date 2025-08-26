@@ -1,0 +1,16 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "QuicksightContributor",
+            "Effect": "Allow",
+            "Action": [
+                "quicksight:CreateUser"          
+                
+            ],
+            "Resource": [
+                "arn:aws:quicksight::${AccountId}:user/$${aws:userid}"
+            ]
+        }
+    ]
+}

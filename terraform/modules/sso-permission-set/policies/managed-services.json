@@ -1,0 +1,404 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowRestricted",
+      "Effect": "Allow",
+      "Action": [
+        "sns:ConfirmSubscription",
+        "sns:CreateTopic",
+        "sns:DeleteTopic",
+        "sns:Publish",
+        "sns:SetSubscriptionAttributes",
+        "sns:SetTopicAttributes",
+        "sns:Unsubscribe",
+        "sns:TagResource"
+      ],
+      "Resource": [
+        "arn:aws:sns:*:${AccountId}:*${TeamCode}*",
+        "arn:aws:sns:*:${AccountId}:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowSubscribeBank",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:sns:*:${AccountId}:*${TeamCode}*",
+        "arn:aws:sns:*:${AccountId}:*${TeamName}*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "sns:Protocol": [
+            "email",
+            "email-json",
+            "lambda",
+            "sqs"
+          ]
+        },
+        "StringLike": {
+          "sns:Endpoint": [
+            "*@bankservafrica.com",
+            "*@bankservafrica.cloud",
+            "*@bankservafrica.ent",
+            "*@tcib.africa",
+            "arn:aws:lambda:*:${AccountId}:function:*${TeamCode}*",
+            "arn:aws:sqs:*:${AccountId}:*${TeamCode}*",
+            "*.ABSACORP.onmicrosoft.com@emea.teams.ms*",
+            "arn:aws:lambda:*:${AccountId}:function:*${TeamName}*",
+            "arn:aws:sqs:*:${AccountId}:*${TeamName}*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQS",
+      "Effect": "${SQSPermissions}",
+      "Action": [
+        "sqs:DeleteMessage",
+        "sqs:GetQueueUrl",
+        "sqs:ChangeMessageVisibility",
+        "sqs:SendMessageBatch",
+        "sqs:UntagQueue",
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:ListQueueTags",
+        "sqs:TagQueue",
+        "sqs:RemovePermission",
+        "sqs:ListDeadLetterSourceQueues",
+        "sqs:AddPermission",
+        "sqs:DeleteMessageBatch",
+        "sqs:PurgeQueue",
+        "sqs:DeleteQueue",
+        "sqs:CreateQueue",
+        "sqs:ChangeMessageVisibilityBatch",
+        "sqs:SetQueueAttributes"
+      ],
+      "Resource": [
+        "arn:aws:sqs:*:${AccountId}:*${TeamCode}*",
+        "arn:aws:sqs:*:${AccountId}:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowKinesis",
+      "Effect": "${KinesisPermissions}",
+      "Action": [
+        "kinesis:*"
+      ],
+      "Resource": [
+        "arn:aws:kinesis:*:${AccountId}:stream/*${TeamCode}*",
+        "arn:aws:firehose:*:${AccountId}:deliverystream/*${TeamCode}*",
+        "arn:aws:kinesisanalytics:*:${AccountId}:application/*${TeamCode}*",
+        "arn:aws:kinesisvideo:*:${AccountId}:application/*${TeamCode}*/*",
+        "arn:aws:kinesis:*:${AccountId}:stream/*${TeamName}*",
+        "arn:aws:firehose:*:${AccountId}:deliverystream/*${TeamName}*",
+        "arn:aws:kinesisanalytics:*:${AccountId}:application/*${TeamName}*",
+        "arn:aws:kinesisvideo:*:${AccountId}:application/*${TeamName}*/*"
+      ]
+    },
+    {
+      "Sid": "AllowElasticSearch",
+      "Effect": "${ElasticsearchPermissions}",
+      "Action": [
+        "es:*"
+      ],
+      "Resource": [
+        "arn:aws:es:*:${AccountId}:domain/*${TeamCode}*",
+        "arn:aws:es:*:${AccountId}:domain/*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowElasticSearchTags",
+      "Effect": "${ElasticsearchPermissions}",
+      "Action": [
+        "es:AddTags",
+        "es:RemoveTags"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowKafka",
+      "Effect": "${KafkaPermissions}",
+      "Action": [
+        "kafka:UntagResource",
+        "kafka:ListTagsForResource"
+      ],
+      "Resource": [
+        "arn:aws:kafka:*:${AccountId}:cluster/*${TeamCode}*/*",
+        "arn:aws:kafka:*:${AccountId}:cluster/*${TeamName}*/*"
+      ]
+    },
+    {
+      "Sid": "AllowKafkaAll",
+      "Effect": "${KafkaPermissions}",
+      "Action": [
+        "kafka:Create*",
+        "kafka:DeleteCluster",
+        "kafka:Update*",
+        "kafka:TagResource"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowMQ",
+      "Effect": "${MQPermissions}",
+      "Action": [
+        "mq:*"
+      ],
+      "Resource": [
+        "arn:aws:mq:*:${AccountId}:broker:*${TeamCode}:*",
+        "arn:aws:mq:*:${AccountId}:configuration:*${TeamCode}:*",
+        "arn:aws:mq:*:${AccountId}:broker:*${TeamName}:*",
+        "arn:aws:mq:*:${AccountId}:configuration:*${TeamName}:*"
+      ]
+    },
+    {
+      "Sid": "AllowCloudwatch",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:*",
+        "events:*",
+        "logs:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowCloudFormation",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSTS",
+      "Effect": "Allow",
+      "Action": "sts:DecodeAuthorizationMessage",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSecretManagerWriteRead",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:CancelRotateSecret*",
+        "secretsmanager:DeleteSecret",
+        "secretsmanager:PutSecretValue",
+        "secretsmanager:RestoreSecret",
+        "secretsmanager:RotateSecret",
+        "secretsmanager:Tag*",
+        "secretsmanager:Untag*",
+        "secretsmanager:UpdateSecret*",
+        "secretsmanager:DeleteResourcePolicy",
+        "secretsmanager:PutResourcePolicy",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:UpdateSecretVersionStage"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:*:${AccountId}:secret:*${TeamCode}*",
+        "arn:aws:secretsmanager:*:${AccountId}:secret:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowCcreateSecretManager",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetRandomPassword",
+        "secretsmanager:CreateSecret"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSSMSession",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:StartSession",
+        "ssm:DescribeInstanceInformation",
+        "ssm:GetConnectionStatus",
+        "ssm:DescribeSessions",
+        "ssm:TerminateSession"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "ssm:resourceTag/TeamCode": "${TeamCode}",
+          "ssm:resourceTag/TeamName": "${TeamName}"
+        }
+      }
+    },    
+    {
+      "Sid": "AllowSupport",
+      "Effect": "Allow",
+      "Action": [
+        "support:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowKMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+      ],
+      "Resource": [
+        "arn:aws:kms:*:782747290936:key/*"
+      ]
+    },
+    {
+      "Sid": "AllowKMSLocal",
+      "Effect": "${LocalKMSPermissions}",
+      "Action": [
+        "kms:CreateAlias",
+        "kms:CreateGrant",
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+      ],
+      "Resource": "arn:aws:kms:*:${AccountId}:*/*"
+    },
+    {
+      "Sid": "AccessToBillingInformation",
+      "Effect": "Allow",
+      "Action": [
+        "aws-portal:ViewAccount",
+        "aws-portal:ViewBilling",
+        "aws-portal:ViewBudget",
+        "aws-portal:ViewUsage",
+        "aws-portal:ModifyBilling",
+        "cur:DescribeReportDefinitions",
+        "cur:PutReportDefinition",
+        "cur:DeleteReportDefinition",
+        "cur:ModifyReportDefinition"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSSM",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:PutParameter",
+        "ssm:DeleteParameter*",
+        "ssm:GetParameter*"
+      ],
+      "Resource": [
+        "arn:aws:ssm:*:${AccountId}:parameter/${TeamCode}/*",
+        "arn:aws:ssm:*:${AccountId}:parameter/${TeamName}/*"
+      ]
+    },
+    {
+      "Sid": "AllowSSMSendAWS",
+      "Effect": "Allow",
+      "Action": "ssm:SendCommand",
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringLike": {
+          "aws:ResourceTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSSMSend",
+      "Effect": "Allow",
+      "Action": "ssm:SendCommand",
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringLike": {
+          "ssm:resourceTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSSMAuto",
+      "Effect": "Allow",
+      "Action": "ssm:StartAutomationExecution",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSSMPassRole",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "${SSMAutomationExecutionRole}"
+    },
+    {
+      "Sid": "AllowAssumeRole",
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": ${AssumeRoles}
+    },
+    {
+      "Sid": "AllowACM",
+      "Effect": "Allow",
+      "Action": [
+        "acm:AddTagsToCertificate",
+        "acm:ImportCertificate"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Loggroup",
+      "Effect": "Allow",
+      "Action": [
+        "logs:DeleteLogGroup",
+        "logs:DeleteLogStream"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:log-group:*${TeamCode}*",
+        "arn:aws:logs:*:*:log-group:*${TeamCode}*:*:*",
+        "arn:aws:logs:*:*:log-group:*${TeamName}*",
+        "arn:aws:logs:*:*:log-group:*${TeamName}*:*:*"
+      ]
+    },
+    {
+      "Sid": "Loggroupcldfrc",
+      "Effect": "Deny",
+      "Action": [
+        "logs:DeleteLogGroup",
+        "logs:DeleteLogStream"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:*:*cldfrc*",
+        "arn:aws:logs:*:*:*:vpcflowlogs/*"
+      ]
+    },
+    {
+      "Sid": "AllowAccessAnalyzer",
+      "Effect": "Allow",
+      "Action": [
+        "access-analyzer:*"
+      ],
+      "Resource": [
+        "arn:aws:access-analyzer:*:${AccountId}:analyzer/*${TeamCode}*",
+        "arn:aws:access-analyzer:*:${AccountId}:analyzer/*${TeamCode}*/archive-rule/*",
+        "arn:aws:access-analyzer:*:${AccountId}:analyzer/*${TeamName}*",
+        "arn:aws:access-analyzer:*:${AccountId}:analyzer/*${TeamName}*/archive-rule/*"
+      ]
+    },
+    {
+      "Sid": "CognitoRO",
+      "Effect": "Allow",
+      "Action": "cognito-identity:Get*",
+      "Resource": "*"
+    }
+  ]
+}

@@ -1,0 +1,211 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAllMachineLearning",
+      "Effect": "${MachineLearningPermissions}",
+      "Action": "machinelearning:*",
+      "Resource": [
+        "arn:aws:machinelearning:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:machinelearning:*:${AccountId}:*/*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowRekognition",
+      "Effect": "${RekognitionPermissions}",
+      "Action": "rekognition:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSagemakerWithNetworkIsolationKmsVpcsubnets",
+      "Effect": "${SageMakerPermissions}",
+      "Action": [
+        "sagemaker:CreateMonitoringSchedule",
+        "sagemaker:UpdateMonitoringSchedule",
+        "sagemaker:CreateTrainingJob",
+        "sagemaker:CreateProcessingJob",
+        "sagemaker:CreateHyperParameterTuningJob"
+      ],
+      "Resource": [
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamName}*"
+      ],
+      "Condition": {
+        "ForAnyValue:ArnEquals": {
+          "sagemaker:VolumeKmsKey": "${VolumeKmsKey}"
+        },
+        "ForAnyValue:StringLike": {
+          "sagemaker:VpcSubnets": ${VpcSubnets}
+        },
+        "ForAnyValue:Bool": {
+          "sagemaker:NetworkIsolation": "${NetworkIsolation}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSagemakerWithDirectInternetAccessKmsVpcsubnets",
+      "Effect": "${SageMakerPermissions}",
+      "Action": "sagemaker:CreateNotebookInstance",
+      "Resource": [
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamName}*"
+      ],
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "sagemaker:VpcSubnets": ${VpcSubnets},
+          "sagemaker:DirectInternetAccess": "${DirectInternetAccess}"
+        },
+        "ForAnyValue:ArnEquals": {
+          "sagemaker:VolumeKmsKey": "${VolumeKmsKey}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSagemakerWithKms",
+      "Effect": "${SageMakerPermissions}",
+      "Action": [
+        "sagemaker:CreateEndpointConfig",
+        "sagemaker:CreateLabelingJob",
+        "sagemaker:CreateTransformJob"
+      ],
+      "Resource": [
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamName}*"
+      ],
+      "Condition": {
+        "ForAnyValue:ArnEquals": {
+          "sagemaker:VolumeKmsKey": "${VolumeKmsKey}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSagemakerWithVpcSubnets",
+      "Effect": "${SageMakerPermissions}",
+      "Action": "sagemaker:CreateDomain",
+      "Resource": [
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamName}*"
+      ],
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "sagemaker:VpcSubnets": ${VpcSubnets}
+        }
+      }
+    },
+    {
+      "Sid": "AllowSagemakerWithVpcSubnetsKms",
+      "Effect": "${SageMakerPermissions}",
+      "Action": "sagemaker:CreateAutoMLJob",
+      "Resource": [
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamName}*"
+      ],
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "sagemaker:VpcSubnets": ${VpcSubnets}
+        },
+        "ForAnyValue:ArnEquals": {
+          "sagemaker:VolumeKmsKey": "${VolumeKmsKey}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSagemaker",
+      "Effect": "${SageMakerPermissions}",
+      "Action": [
+        "sagemaker:Delete*",
+        "sagemaker:Create*",
+        "sagemaker:Stop*",
+        "sagemaker:Start*",
+        "sagemaker:Get*",
+        "sagemaker:Update*",
+        "sagemaker:InvokeEndpoint"
+      ],
+      "Resource": [
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:sagemaker:*:${AccountId}:*/*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowLexWrite",
+      "Effect": "${LexPermissions}",
+      "Action": [
+        "lex:CreateBotVersion",
+        "lex:CreateIntentVersion",
+        "lex:CreateSlotTypeVersion",
+        "lex:DeleteBot",
+        "lex:DeleteBotAlias",
+        "lex:DeleteBotChannelAssociation",
+        "lex:DeleteBotVersion",
+        "lex:DeleteIntent",
+        "lex:DeleteIntentVersion",
+        "lex:DeleteSlotType",
+        "lex:DeleteSlotTypeVersion",
+        "lex:DeleteUtterances",
+        "lex:PostContent",
+        "lex:PostText",
+        "lex:PutBot",
+        "lex:PutBotAlias",
+        "lex:PutIntent",
+        "lex:PutSlotType"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "AllowGlue",
+      "Effect": "${GluePermissions}",
+      "Action": [
+        "glue:*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "AllowEMR",
+      "Effect": "${EMRPermissions}",
+      "Action": "elasticmapreduce:*",
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "elasticmapreduce:ResourceTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowEMRTag",
+      "Effect": "${EMRPermissions}",
+      "Action": [
+        "elasticmapreduce:RunJobFlow",
+        "elasticmapreduce:CreateEditor",
+        "elasticmapreduce:AddTags"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "elasticmapreduce:RequestTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowEMRWithoutTagCondition",
+      "Effect": "${EMRPermissions}",
+      "Action": "elasticmapreduce:CreateSecurityConfiguration",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowTextract",
+      "Effect": "${TextractPermissions}",
+      "Action": "textract:*",
+      "Resource": "*"
+    }
+  ]
+}

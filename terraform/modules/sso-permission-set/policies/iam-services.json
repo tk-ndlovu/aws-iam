@@ -1,0 +1,145 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowIAM",
+      "Effect": "${IAMPermissions}",
+      "Action": [
+        "iam:Get*",
+        "iam:List*",
+        "iam:CreateLoginProfile",
+        "iam:*Group*",
+        "iam:CreatePolicy",
+        "iam:DeletePolicy",
+        "iam:DeletePolicyVersion",
+        "iam:SetDefaultPolicyVersion",
+        "iam:Simulate*",
+        "iam:CreateInstanceProfile",
+        "iam:AddRoleToInstanceProfile",
+        "iam:DeleteInstanceProfile",
+        "iam:RemoveRoleFromInstanceProfile",
+        "iam:GenerateServiceLastAccessedDetails",
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowCreatePolicyVersion",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicyVersion",
+        "iam:DeletePolicy",
+        "iam:DeletePolicyVersion",
+        "iam:SetDefaultPolicyVersion"
+      ],
+      "Resource": "arn:aws:iam::${AccountId}:policy/*${TeamCode}*"
+    },
+    {
+      "Sid": "AllowIAMCreateWithBoundary",
+      "Effect": "${IAMPermissions}",
+      "Action": [
+        "iam:CreateRole",
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:PutRolePermissionsBoundary",
+        "iam:PutRolePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "iam:PermissionsBoundary": [
+            "arn:aws:iam::${AccountId}:policy/${UserBoundaryPolicyName}",
+            "arn:aws:iam::${AccountId}:policy/${GenBoundaryPolicyName}",
+            "arn:aws:iam::${AccountId}:policy/${DevTBoudaryPolicyName}",
+            "arn:aws:iam::${AccountId}:policy/${MLBoundaryPolicyName}",
+            "arn:aws:iam::${AccountId}:policy/${LambdaBoundaryPolicyName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DisallowBoundaryPolicyEdit",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreatePolicyVersion",
+        "iam:DeletePolicy",
+        "iam:DeletePolicyVersion",
+        "iam:SetDefaultPolicyVersion"
+      ],
+      "Resource": [
+        "arn:aws:iam::${AccountId}:policy/${UserBoundaryPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${GenBoundaryPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${DevTBoudaryPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${MLBoundaryPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${LambdaBoundaryPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${ComputePolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${StoragePolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${DbPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${DevToolsPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${DNSPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${IAMPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${MLPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${ManagedPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${QuickSightROPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${QuickSightPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${ServerlessPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${RDSSQLPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${KMSPolicyName}",
+        "arn:aws:iam::${AccountId}:policy/${EC2PolicyName}"
+      ]
+    },
+    {
+      "Sid": "PreventBoundaryDelete",
+      "Effect": "Deny",
+      "Action": "iam:DeleteRolePermissionsBoundary",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowPassRoleWithTeamPrefixOrService",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::${AccountId}:role/*${TeamCode}*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/ec2.application-autoscaling*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/autoscaling*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/ecs*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/rds*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/es*",
+        "arn:aws:iam::${AccountId}:role/AWSGlue*",
+        "arn:aws:iam::${AccountId}:role/AWSSage*"
+      ]
+    },
+    {
+      "Sid": "DenyAssumeRoleEditSvcRole",
+      "Effect": "Deny",
+      "Action": "iam:UpdateAssumeRolePolicy",
+      "Resource": ${DenyAssumeRoleEditRoles}
+    },
+    {
+      "Sid": "DenyAccessToAdminRole",
+      "Effect": "Deny",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": "arn:aws:iam::*:role/*-cldfrc-*"
+    },
+    {
+      "Sid": "AddRolesWithTags",
+      "Effect": "${IAMPermissions}",
+      "Action": [
+        "iam:TagRole",
+        "iam:DeleteRole",
+        "iam:UpdateAssumeRolePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "iam:ResourceTag/TeamCode": "${TeamCode}"
+        }
+      }
+    }
+  ]
+}

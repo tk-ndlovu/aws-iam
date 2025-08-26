@@ -1,0 +1,17 @@
+,
+    {
+      "Sid": "DenyRunInstances",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunScheduledInstances",
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:ec2:*::image/ami-*",
+      "Condition": {
+        "StringNotEquals": {
+          "ec2:Owner": "${AMIOwnersWhiteList}"
+        }
+      }
+    },
+
+    Check on the account id variable on the polices

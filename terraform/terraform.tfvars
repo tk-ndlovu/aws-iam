@@ -1,0 +1,6 @@
+team_email          = "security@bankservafrica.com"
+environment         = "root"
+app_name            = "sso"
+owner               = "Security"
+account_id = "138548450576"
+region = "eu-west-1"

@@ -1,0 +1,316 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowNoCondition",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CopySnapshot",
+        "ec2:ImportSnapshot",
+        "ec2:ImportVolume",
+        "ec2:ResetSnapshot*",
+        "cloudwatch:*",
+        "events:*",
+        "logs:*",
+        "lambda:*",
+        "sqs:List*",
+        "sns:List*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowS3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:DeleteObject*",
+        "s3:Get*",
+        "s3:List*",
+        "s3:PutObject*",
+        "s3:ReplicateDelete",
+        "s3:ReplicateObject",
+        "s3:RestoreObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*general*/*${TeamCode}*",
+        "arn:aws:s3:::*${TeamCode}*",
+        "arn:aws:s3:::*${TeamCode}*/*",
+        "arn:aws:s3:::*general*/*${TeamName}*",
+        "arn:aws:s3:::*${TeamName}*",
+        "arn:aws:s3:::*${TeamName}*/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceVpc": ${TeamVPCIds}
+        }
+      }
+    },
+    {
+      "Sid": "DisallowS3PublicPolicy",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutAccountPublicAccessBlock"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLambdaVPC",
+      "Effect": "${LambdaPermissions}",
+      "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DeleteNetworkInterface",
+        "ec2:DescribeNetworkInterfaces"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowEBSSnapshotQ",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*Snapshot*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:RequestTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowEBSSnapshotS",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*Snapshot*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:ResourceTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoGlobal",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:List*",
+        "dynamodb:Describe*",
+        "dynamodb:GetShardIterator",
+        "dynamodb:GetRecords"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowDynamodb",
+      "Effect": "${DynamoDBPermissions}",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "dynamodb:RestoreTableToPointInTime",
+        "dynamodb:PurchaseReservedCapacityOfferings",
+        "dynamodb:UpdateGlobalTable",
+        "dynamodb:CreateBackup",
+        "dynamodb:DeleteTable",
+        "dynamodb:UpdateContinuousBackups",
+        "dynamodb:TagResource",
+        "dynamodb:CreateGlobalTable",
+        "dynamodb:UpdateTimeToLive",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:UntagResource",
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:CreateTable",
+        "dynamodb:UpdateGlobalTableSettings",
+        "dynamodb:RestoreTableFromBackup",
+        "dynamodb:DeleteBackup",
+        "dynamodb:UpdateTable",
+        "dynamodb:DescribeStream",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:ListStreams",
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:*:${AccountId}:table/*${TeamCode}*",
+        "arn:aws:dynamodb:*:${AccountId}:table/*${TeamCode}*/*",
+        "arn:aws:dynamodb:*:${AccountId}:table/*${TeamName}*",
+        "arn:aws:dynamodb:*:${AccountId}:table/*${TeamName}*/*"
+      ],
+      "Condition": {
+        "StringEqualsIfExists": {
+          "aws:SourceVpce": [
+            ${DynamoVPCE}
+          ]
+        },
+        "IpAddressIfExists": {
+          "aws:SourceIp": [
+            "34.242.211.3",
+            "52.209.142.5",
+            "34.248.170.65",
+            "52.51.119.114",
+            "52.51.119.114"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQS",
+      "Effect": "${SQSPermissions}",
+      "Action": [
+        "sqs:DeleteMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:SendMessageBatch",
+        "sqs:UntagQueue",
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage",
+        "sqs:TagQueue",
+        "sqs:RemovePermission",
+        "sqs:AddPermission",
+        "sqs:DeleteMessageBatch",
+        "sqs:PurgeQueue",
+        "sqs:DeleteQueue",
+        "sqs:CreateQueue",
+        "sqs:ChangeMessageVisibilityBatch",
+        "sqs:SetQueueAttributes"
+      ],
+      "Resource": [
+        "arn:aws:sqs:*:${AccountId}:*${TeamCode}*",
+        "arn:aws:sqs:*:${AccountId}:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowSNSRestricted",
+      "Effect": "Allow",
+      "Action": [
+        "sns:ConfirmSubscription",
+        "sns:CreateTopic",
+        "sns:DeleteTopic",
+        "sns:Publish",
+        "sns:SetSubscriptionAttributes",
+        "sns:SetTopicAttributes",
+        "sns:Unsubscribe"
+      ],
+      "Resource": [
+        "arn:aws:sns:*:${AccountId}:*${TeamCode}*",
+        "arn:aws:sns:*:${AccountId}:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowSecretManagerWrite",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:CancelRotateSecret*",
+        "secretsmanager:CreateSecret",
+        "secretsmanager:DeleteSecret",
+        "secretsmanager:PutSecretValue",
+        "secretsmanager:RestoreSecret",
+        "secretsmanager:RotateSecret",
+        "secretsmanager:TagResource",
+        "secretsmanager:UpdateSecret*",
+        "secretsmanager:DeleteResourcePolicy",
+        "secretsmanager:PutResourcePolicy",
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "AllowSSM",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:Get*",
+        "ssm:PutParameter",
+        "ssm:DeleteParameter*"
+      ],
+      "Resource": [
+        "arn:aws:ssm:*:${AccountId}:parameter/${TeamCode}/*",
+        "arn:aws:ssm:*:${AccountId}:parameter/${TeamName}/*"
+      ]
+    },
+    {
+      "Sid": "AllowElasticTranscoder",
+      "Effect": "Allow",
+      "Action": "elastictranscoder:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowElemental",
+      "Effect": "Allow",
+      "Action": [
+        "mediaconvert:*"
+      ],
+      "Resource": [
+        "arn:aws:mediaconvert:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:mediaconvert:*:${AccountId}:*/*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowKMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+      ],
+      "Resource": [
+        "arn:aws:kms:*:782747290936:key/*"
+      ]
+    },
+    {
+      "Sid": "AllowAPIGateway",
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:POST",
+        "apigateway:PUT",
+        "apigateway:PATCH",
+        "apigateway:DELETE"
+      ],
+      "Resource": [
+        "arn:aws:apigateway:*::/restapis/*/*",
+        "arn:aws:apigateway:*::/usageplans"
+      ]
+    },
+    {
+      "Sid": "Loggroupcldfrc",
+      "Effect": "Deny",
+      "Action": [
+        "logs:DeleteLogGroup",
+        "logs:DeleteLogStream"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:*:*cldfrc*",
+        "arn:aws:logs:*:*:*:vpcflowlogs/*"
+      ]
+    },
+    {
+      "Sid": "AllowXray",
+      "Effect": "${AllowXrayPermissions}",
+      "Action": [
+        "xray:CreateGroup",
+        "xray:CreateSamplingRule",
+        "xray:DeleteGroup",
+        "xray:DeleteSamplingRule",
+        "xray:UpdateGroup",
+        "xray:UpdateSamplingRule",
+        "xray:PutTraceSegments",
+        "xray:PutTelemetryRecords"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowDynamodb",
+      "Effect": "${DynamoDBPermissions}",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "dynamodb:RestoreTableToPointInTime",
+        "dynamodb:PurchaseReservedCapacityOfferings",
+        "dynamodb:UpdateGlobalTable",
+        "dynamodb:CreateBackup",
+        "dynamodb:DeleteTable",
+        "dynamodb:UpdateContinuousBackups",
+        "dynamodb:TagResource",
+        "dynamodb:CreateGlobalTable",
+        "dynamodb:UpdateTimeToLive",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:UntagResource",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:CreateTable",
+        "dynamodb:UpdateGlobalTableSettings",
+        "dynamodb:RestoreTableFromBackup",
+        "dynamodb:DeleteBackup",
+        "dynamodb:UpdateTable"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:*:${AccountId}:table/*${TeamCode}*",
+        "arn:aws:dynamodb:*:${AccountId}:table/*${TeamCode}*/*"
+      ],
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestTag/TeamCode": "${TeamCode}",
+          "aws:RequestTag/TeamName": "${TeamName}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRDSAccessByTeam",
+      "Effect": "${RDSPermissions}",
+      "Action": [
+        "rds:*"
+      ],
+      "Resource": "arn:aws:rds:*:${AccountId}:*:*${TeamCode}*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestTag/TeamCode": "${TeamCode}",
+          "aws:RequestTag/TeamName": "${TeamName}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateOptionGroup",
+      "Effect": "Allow",
+      "Action": [
+        "rds:CreateOptionGroup",
+        "rds:DescribeOptionGroups",
+        "rds:AddTagsToResource",
+        "rds:RemoveTagsFromResource"
+      ],
+      "Resource": "arn:aws:rds:*:${AccountId}:*:*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestTag/TeamCode": "${TeamCode}",
+          "aws:RequestTag/TeamName": "${TeamName}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowPostgres",
+      "Effect": "Allow",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:CreateDBCluster"
+      ],
+      "Resource": "arn:aws:rds:*:${AccountId}:og:*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestTag/TeamCode": "${TeamCode}",
+          "aws:RequestTag/TeamName": "${TeamName}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateCacheCluster",
+      "Effect": "${ElasticachePermissions}",
+      "Action": [
+        "elasticache:CopySnapshot",
+        "elasticache:RevokeCacheSecurityGroupIngress",
+        "elasticache:PurchaseReservedCacheNodesOffering",
+        "elasticache:Modify*",
+        "elasticache:TestFailover",
+        "elasticache:AddTagsToResource",
+        "elasticache:AuthorizeCacheSecurityGroupIngress",
+        "elasticache:Delete*",
+        "elasticache:ResetCacheParameterGroup",
+        "elasticache:RebootCacheCluster",
+        "elasticache:Create*",
+        "elasticache:RemoveTagsFromResource"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestTag/TeamCode": "${TeamCode}",
+          "aws:RequestTag/TeamName": "${TeamName}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRedShift",
+      "Effect": "${RedShiftPermissions}",
+      "Action": [
+        "redshift:*"
+      ],
+      "Resource": [
+        "arn:aws:redshift:*:${AccountId}:*:*${TeamCode}*/*",
+        "arn:aws:redshift:*:${AccountId}:*:*${TeamCode}*"
+      ],
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestTag/TeamCode": "${TeamCode}",
+          "aws:RequestTag/TeamName": "${TeamName}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthena",
+      "Effect": "${AthenaPermissions}",
+      "Action": [
+        "athena:*"
+      ],
+      "Resource": "arn:aws:athena:*:${AccountId}:workgroup/*"
+    },
+    {
+      "Sid": "AllowDMS0",
+      "Effect": "Allow",
+      "Action": [
+        "dms:Describe*",
+        "dms:ModifyEventSubscription",
+        "dms:ListTagsForResource",
+        "dms:ModifyEndpoint",
+        "dms:RefreshSchemas",
+        "dms:ApplyPendingMaintenanceAction",
+        "dms:ReloadTables",
+        "dms:Delete*",
+        "dms:Create*",
+        "dms:ImportCertificate",
+        "dms:*Tags*",
+        "dms:ModifyReplicationInstance",
+        "dms:ModifyReplicationSubnetGroup",
+        "dms:RebootReplicationInstance",
+        "dms:*ReplicationTask*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestTag/TeamCode": "${TeamCode}",
+          "aws:RequestTag/TeamName": "${TeamName}"
+        }
+      }
+    }
+  ]
+}

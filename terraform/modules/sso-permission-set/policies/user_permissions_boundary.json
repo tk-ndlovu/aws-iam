@@ -1,0 +1,325 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowForAllRes",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:Get*",
+        "ec2:List*",
+        "ec2:Describe*",
+        "ec2:AcceptReservedInstancesExchangeQuote",
+        "ec2:AllocateHosts",
+        "ec2:AssignIpv6Addresses",
+        "ec2:AssignPrivateIpAddresses",
+        "ec2:AssociateIamInstanceProfile",
+        "ec2:AttachNetworkInterface",
+        "ec2:AttachVolume",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:BundleInstance",
+        "ec2:CancelBundleTask",
+        "ec2:CancelConversionTask",
+        "ec2:CancelExportTask",
+        "ec2:CancelImportTask",
+        "ec2:CancelReservedInstancesListing",
+        "ec2:CancelSpot*",
+        "ec2:ConfirmProductInstance",
+        "ec2:CopyImage",
+        "ec2:CopySnapshot",
+        "ec2:CreateFpgaImage",
+        "ec2:CreateImage",
+        "ec2:CreateInstanceExportTask",
+        "ec2:CreateInternetGateway",
+        "ec2:CreateKeyPair",
+        "ec2:CreateNetworkInterface",
+        "ec2:CreateNetworkInterfacePermission",
+        "ec2:CreatePlacementGroup",
+        "ec2:CreateReservedInstancesListing",
+        "ec2:CreateSecurityGroup",
+        "ec2:CreateSnapshot",
+        "ec2:CreateSpotDatafeedSubscription",
+        "ec2:CreateTags",
+        "ec2:CreateVolume",
+        "ec2:DeleteKeyPair",
+        "ec2:DeleteNetworkInterface",
+        "ec2:DeletePlacementGroup",
+        "ec2:DeleteSecurityGroup",
+        "ec2:DeleteSnapshot",
+        "ec2:DeleteSpotDatafeedSubscription",
+        "ec2:DeleteTags",
+        "ec2:DeleteVolume",
+        "ec2:DeregisterImage",
+        "ec2:DetachNetworkInterface",
+        "ec2:DetachVolume",
+        "ec2:DisassociateIamInstanceProfile",
+        "ec2:EnableVolumeIO",
+        "ec2:ImportImage",
+        "ec2:ImportInstance",
+        "ec2:ImportKeyPair",
+        "ec2:ImportSnapshot",
+        "ec2:ImportVolume",
+        "ec2:ModifyHosts",
+        "ec2:ModifyIdentityIdFormat",
+        "ec2:ModifyIdFormat",
+        "ec2:ModifyImageAttribute",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:ModifyInstancePlacement",
+        "ec2:ModifyNetworkInterfaceAttribute",
+        "ec2:ModifyReservedInstances",
+        "ec2:ModifySnapshotAttribute",
+        "ec2:ModifySpotFleetRequest",
+        "ec2:ModifySubnetAttribute",
+        "ec2:ModifyVolume",
+        "ec2:ModifyVolumeAttribute",
+        "ec2:MonitorInstances",
+        "ec2:PurchaseHostReservation",
+        "ec2:PurchaseReservedInstancesOffering",
+        "ec2:PurchaseScheduledInstances",
+        "ec2:RebootInstances",
+        "ec2:RegisterImage",
+        "ec2:ReleaseAddress",
+        "ec2:ReleaseHosts",
+        "ec2:ReplaceIamInstanceProfileAssociation",
+        "ec2:ReportInstanceStatus",
+        "ec2:RequestSpot*",
+        "ec2:ResetImageAttribute",
+        "ec2:ResetInstanceAttribute",
+        "ec2:ResetNetworkInterfaceAttribute",
+        "ec2:ResetSnapshotAttribute",
+        "ec2:RestoreAddressToClassic",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:RunInstances",
+        "ec2:RunScheduledInstances",
+        "ec2:StartInstances",
+        "ec2:StopInstances",
+        "ec2:TerminateInstances",
+        "ec2:UnassignPrivateIpAddresses",
+        "ec2:UnmonitorInstances",
+        "ec2:UpdateSecurityGroupRuleDescriptions*",
+        "elasticloadbalancing:*",
+        "ssm:*",
+        "ecr:*",
+        "ecs:*",
+        "glue:*",
+        "redshift:DescribeClusters",
+        "redshift:DescribeClusterSubnetGroups",
+        "cloudformation:*",
+        "sqs:List*",
+        "lambda:*",
+        "aws-marketplace:*",
+        "athena:*",
+        "elasticmapreduce:*",
+        "application-autoscaling:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSNS",
+      "Effect": "Allow",
+      "Action": [
+        "sns:List*",
+        "sns:CreateTopic",
+        "sns:DeleteTopic",
+        "sns:Publish",
+        "sns:SetTopicAttributes"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSubscribeBank",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "sns:Protocol": "email"
+        },
+        "StringLike": {
+          "sns:Endpoint": [
+            "*@absa.co.za",
+            "*@barclayscapital.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "SQS",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:Change*",
+        "sqs:Send*",
+        "sqs:Receive*",
+        "sqs:Get*",
+        "sqs:Remove*",
+        "sqs:Add*",
+        "sqs:Delete*",
+        "sqs:*Queue*"
+      ],
+      "Resource": [
+        "arn:aws:sqs:*:${AccountId}:*${TeamCode}*",
+        "arn:aws:sqs:*:${AccountId}:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowDatabase",
+      "Effect": "Allow",
+      "Action": [
+        "rds:*",
+        "dynamodb:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowKMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*"
+      ],
+      "Resource": ${AllowKMSResourceList}
+    },
+    {
+      "Sid": "AllowCloudWatchEvents",
+      "Effect": "Allow",
+      "Action": [
+        "events:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLogging",
+      "Effect": "Allow",
+      "Action": [
+        "config:*",
+        "cloudwatch:*",
+        "logs:*",
+        "cloudtrail:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowS3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:DeleteObject*",
+        "s3:Get*",
+        "s3:List*",
+        "s3:PutObject*",
+        "s3:ReplicateDelete",
+        "s3:ReplicateObject",
+        "s3:RestoreObject"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DisallowS3PublicPolicy",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutAccountPublicAccessBlock"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAssumeRole",
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": ${AssumeRoles}
+    },
+    {
+      "Sid": "AllowIAMRead",
+      "Effect": "Allow",
+      "Action": [
+        "iam:List*",
+        "iam:Get*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowPassRoleWithTeamPrefixOrService",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::${AccountId}:role/*${TeamCode}*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/ec2.application-autoscaling*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/autoscaling*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/ecs*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/rds*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/es*",
+        "arn:aws:iam::${AccountId}:role/*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "DenyAccessToAdminRole",
+      "Effect": "Deny",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::*:role/*-cldfrc-*"
+    },
+    {
+      "Sid": "AllowElasticSearch",
+      "Effect": "Allow",
+      "Action": [
+        "es:*"
+      ],
+      "Resource": [
+        "arn:aws:es:*:${AccountId}:domain/*${TeamCode}*",
+        "arn:aws:es:*:${AccountId}:domain/*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowAPIGateway",
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:POST",
+        "apigateway:PUT",
+        "apigateway:PATCH",
+        "apigateway:DELETE"
+      ],
+      "Resource": [
+        "arn:aws:apigateway:*::/restapis/*/*",
+        "arn:aws:apigateway:*::/usageplans"
+      ]
+    },
+    {
+      "Sid": "AllowCodeDeployAccess",
+      "Effect": "Allow",
+      "Action": [
+        "codedeploy:CreateDeployment",
+        "codedeploy:GetApplicationRevision",
+        "codedeploy:GetDeployment",
+        "codedeploy:GetDeploymentConfig",
+        "codedeploy:RegisterApplicationRevision",
+        "codedeploy:DeleteDeploymentGroup"
+      ],
+      "Resource": [
+        "arn:*:codedeploy:*:${AccountId}:*:*${TeamCode}*",
+        "arn:*:codedeploy:*:${AccountId}:*:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "Loggroupcldfrc",
+      "Effect": "Deny",
+      "Action": [
+        "logs:DeleteLogGroup",
+        "logs:DeleteLogStream"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:*:*cldfrc*",
+        "arn:aws:logs:*:*:*:vpcflowlogs/*"
+      ]
+    }
+  ]
+}

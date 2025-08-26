@@ -1,0 +1,152 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowLambdaWrite",
+      "Effect": "${LambdaPermissions}",
+      "Action": [
+        "lambda:CreateAlias",
+        "lambda:CreateFunction",
+        "lambda:DeleteAlias",
+        "lambda:DeleteEventSourceMapping",
+        "lambda:CreateEventSourceMapping",
+        "lambda:DeleteFunction",
+        "lambda:DeleteFunctionConcurrency",
+        "lambda:InvokeAsync",
+        "lambda:InvokeFunction",
+        "lambda:PublishVersion",
+        "lambda:PutFunctionConcurrency",
+        "lambda:RemovePermission",
+        "lambda:TagResource",
+        "lambda:UntagResource",
+        "lambda:UpdateAlias",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateFunctionConfiguration"
+      ],
+      "Resource": [
+        "arn:aws:lambda:*:${AccountId}:function:*${TeamCode}*",
+        "arn:aws:lambda:*:${AccountId}:event-source-mapping:*",
+        "arn:aws:lambda:*:${AccountId}:function:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowLambdaSNS",
+      "Effect": "${LambdaPermissions}",
+      "Action": [
+        "lambda:AddPermission"
+      ],
+      "Resource": [
+        "arn:aws:lambda:*:${AccountId}:function:*${TeamCode}*",
+        "arn:aws:sns:*:${AccountId}:*${TeamCode}*",
+        "arn:aws:lambda:*:${AccountId}:function:*${TeamName}*",
+        "arn:aws:sns:*:${AccountId}:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowLambdaEvent",
+      "Effect": "${LambdaPermissions}",
+      "Action": [
+        "lambda:UpdateEventSourceMapping",
+        "lambda:CreateEventSourceMapping"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLambdaLayers",
+      "Effect": "${LambdaPermissions}",
+      "Action": [
+        "lambda:DeleteLayerVersion",
+        "lambda:GetLayerVersion",
+        "lambda:GetLayerVersionPolicy",
+        "lambda:ListLayerVersions",
+        "lambda:ListLayers",
+        "lambda:PublishLayerVersion"
+      ],
+      "Resource": [
+        "arn:aws:lambda:*:${AccountId}:layer:*${TeamCode}*",
+        "arn:aws:lambda:*:${AccountId}:layer:*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowElemental",
+      "Effect": "${ElementalPermissions}",
+      "Action": [
+        "mediaconvert:*"
+      ],
+      "Resource": [
+        "arn:aws:mediaconvert:*:${AccountId}:*/*${TeamCode}*",
+        "arn:aws:mediaconvert:*:${AccountId}:*/*${TeamName}*"
+      ]
+    },
+    {
+      "Sid": "AllowElasticTranscoder",
+      "Effect": "${ElasticTranscoderPermissions}",
+      "Action": "elastictranscoder:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowQuicksight",
+      "Effect": "${IAMQuickSightPermissions}",
+      "Action": [
+        "quicksight:CreateUser",
+        "quicksight:CreateReader"
+      ],
+      "Resource": "arn:aws:quicksight::${AccountId}:user/$${aws:userid}"
+    },
+    {
+      "Sid": "AllowViewOnlyQuickSight",
+      "Effect": "${QuickSightPermissions}",
+      "Action": [
+        "quicksight:DescribeDashboard",
+        "quicksight:ListDashboards",
+        "quicksight:GetDashboardEmbedUrl",
+        "quicksight:SearchDashboards",
+        "quicksight:ListAnalyses",
+        "quicksight:DescribeAnalysis",
+        "quicksight:GetSessionEmbedUrl"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAPIGateway",
+      "Effect": "${APIGatewayPermissions}",
+      "Action": [
+        "apigateway:POST",
+        "apigateway:PUT",
+        "apigateway:PATCH",
+        "apigateway:DELETE"
+      ],
+      "Resource": [
+        "arn:aws:apigateway:*::/restapis/*/*",
+        "arn:aws:apigateway:*::/usageplans",
+        "arn:aws:apigateway:*::/tags/*",
+        "arn:aws:apigateway:*::/vpclinks",
+        "arn:aws:apigateway:*::/apikeys"
+      ]
+    },
+    {
+      "Sid": "AllowImportAPI",
+      "Effect": "${APIGatewayPermissions}",
+      "Action": [
+        "apigateway:PUT"
+      ],
+      "Resource": "arn:aws:apigateway:*::/restapis/*"
+    },
+    {
+      "Sid": "AllowReadECR",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:BatchCheck*",
+        "ecr:BatchGet*",
+        "ecr:Describe*",
+        "ecr:Get*",
+        "ecr:List*"
+      ],
+      "Resource": [
+        "arn:aws:ecr:*:864385758454:repository/*",
+        "arn:aws:ecr:*:${AccountId}:repository/*${TeamCode}*",
+        "arn:aws:ecr:*:${AccountId}:repository/*${TeamName}*"
+      ]
+    }
+  ]
+}

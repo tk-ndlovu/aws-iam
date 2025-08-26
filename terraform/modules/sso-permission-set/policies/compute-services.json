@@ -1,0 +1,230 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAllResources",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:Assign*",
+        "ec2:ModifyImageAttribute",
+        "ec2:RegisterImage",
+        "ec2:CreateSecurityGroup",
+        "ec2:CreateLaunchTemp*",
+        "ec2:*Ingress",
+        "ec2:*Egress",
+        "ec2:*KeyPair",
+        "ec2:ModifyInstance*",
+        "ec2:*NetworkInterface*",
+        "ec2:*PlacementGroup",
+        "autoscaling:*",
+        "application-autoscaling:*",
+        "aws-marketplace:ViewSubscriptions"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowEC2",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AcceptReserved*",
+        "ec2:AllocateHosts",
+        "ec2:AssociateIamInstanceProfile",
+        "ec2:BundleInstance",
+        "ec2:Cancel*",
+        "ec2:CreateTags",
+        "ec2:ConfirmProductInstance",
+        "ec2:Copy*",
+        "ec2:CreateFpga*",
+        "ec2:CreateInstanceExp*",
+        "ec2:CreateReservedInstancesListing",
+        "ec2:CreateSpot*",
+        "ec2:DeleteSecurityGroup",
+        "ec2:DeleteSpotDatafeedSubscription",
+        "ec2:DeleteTags",
+        "ec2:DeleteLaunchTemp*",
+        "ec2:DisassociateIamInstanceProfile",
+        "ec2:Import*",
+        "ec2:ModifyHosts",
+        "ec2:ModifyIdentityIdFormat",
+        "ec2:ModifyIdFormat",
+        "ec2:ModifyReservedInstances",
+        "ec2:ModifySpot*",
+        "ec2:ModifySubnetAttribute",
+        "ec2:MonitorInstances",
+        "ec2:Purchase*",
+        "ec2:RebootInstances",
+        "ec2:ReleaseAddress",
+        "ec2:ReleaseHosts",
+        "ec2:ReplaceIamInstancePro*",
+        "ec2:ReportInstanceStatus",
+        "ec2:RequestSpot*",
+        "ec2:Reset*",
+        "ec2:Revoke*",
+        "ec2:Run*",
+        "ec2:*Instances",
+        "ec2:UnassignPrivateIpAddresses",
+        "ec2:UnmonitorInstances",
+        "ec2:UpdateSecurityG*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "ec2:ResourceTag/TeamCode": "${TeamCode}",
+          "ec2:ResourceTag/TeamName": "${TeamName}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Tagged",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:CreateTags"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestTag/TeamCode": "${TeamCode}",
+          "aws:RequestTag/TeamName": "${TeamName}"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRunNotTagged",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:ec2:*::image/*",
+        "arn:aws:ec2:*:*:subnet/*",
+        "arn:aws:ec2:*:*:network-interface/*",
+        "arn:aws:ec2:*:*:key-pair/*",
+        "arn:aws:ec2:*:*:security-group/*"
+      ]
+    },
+    {
+      "Effect": "${AllowEIPPermissions}",
+      "Action": [
+        "ec2:AllocateAddress",
+        "ec2:AssociateAddress"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowPassRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::${AccountId}:role/*${TeamCode}*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/ec2.application-autoscaling*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/autoscaling*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/ecs*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/rds*",
+        "arn:aws:iam::${AccountId}:role/aws-service-role/es*",
+        "arn:aws:iam::${AccountId}:role/AWSGlue*",
+        "arn:aws:iam::${AccountId}:role/AWSSage*"
+      ]
+    },
+    {
+      "Sid": "DenyAccessToAdminRole",
+      "Effect": "Deny",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::*:role/*-admin-*"
+    },
+    {
+      "Sid": "AccessToEC2Reports",
+      "Effect": "Allow",
+      "Action": "ec2-reports:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLB",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:*"
+      ],
+      "Resource": [
+        "arn:aws:elasticloadbalancing:*:${AccountId}:*/*/*${TeamCode}*/*",
+        "arn:aws:elasticloadbalancing:*:${AccountId}:*/*${TeamCode}*"
+      ]
+    },
+    {
+      "Sid": "AllowECR",
+      "Effect": "${ECRPermissions}",
+      "Action": [
+        "ecr:CreateRepository",
+        "ecr:DescribeRepositories",
+        "ecr:GetAuthorizationToken"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "AllowECRRestricted",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:BatchDeleteImage*",
+        "ecr:CompleteLayerUpload",
+        "ecr:DeleteRepository",
+        "ecr:DeleteLifecyclePolicy",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:Put*",
+        "ecr:Tag*"
+      ],
+      "Resource": [
+        "arn:aws:ecr:*:${AccountId}:repository/*${TeamCode}*"
+      ]
+    },
+    {
+      "Sid": "AllowECS",
+      "Effect": "${ECSPermissions}",
+      "Action": [
+        "ecs:CreateCluster",
+        "ecs:CreateService",
+        "ecs:DeleteService",
+        "ecs:DeregisterTaskDefinition",
+        "ecs:DiscoverPollEndpoint",
+        "ecs:RegisterTaskDefinition",
+        "ecs:UpdateService",
+        "ecs:*Task",
+        "ecs:Tag*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowECSDel",
+      "Effect": "${ECSPermissions}",
+      "Action": "ecs:DeleteCluster",
+      "Resource": "arn:aws:ecs:*:${AccountId}:cluster/*${TeamCode}*"
+    },
+    {
+      "Sid": "AllowECSTeam",
+      "Effect": "${ECSPermissions}",
+      "Action": [
+        "ecs:Poll",
+        "ecs:*Attributes",
+        "ecs:Update*",
+        "ecs:Register*",
+        "ecs:Submit*",
+        "ecs:Deregister*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ArnLike": {
+          "ecs:cluster": "arn:aws:ecs:*:${AccountId}:cluster/*${TeamCode}*"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2IC",
+      "Effect": "${EC2InstanceConnectPermissions}",
+      "Action": "ec2-instance-connect:SendSSHPublicKey",
+      "Resource": [
+        "arn:aws:ec2:*:${AccountId}:instance/*"
+      ]
+    }
+  ]
+}

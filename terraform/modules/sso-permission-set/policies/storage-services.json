@@ -1,0 +1,218 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowReadS3Paterns",
+      "Effect": "Allow",
+      "Action": [
+        "s3:List*",
+        "s3:Get*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::cibenv-patterns",
+        "arn:aws:s3:::cibenv-patterns/*"
+      ]
+    },
+    {
+      "Sid": "AllowWriteAccess",
+      "Effect": "Allow",
+      "Action": [
+        "s3:Create*",
+        "s3:Delete*",
+        "s3:Put*",
+        "s3:AbortMultipartUpload",
+        "s3:RestoreObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*general*/*${TeamCode}*",
+        "arn:aws:s3:::*${TeamCode}*",
+        "arn:aws:s3:::*${TeamCode}*/*",
+        "arn:aws:s3:::*general*/*${TeamName}*",
+        "arn:aws:s3:::*${TeamName}*",
+        "arn:aws:s3:::*${TeamName}*/*"
+      ]
+    },
+    {
+      "Sid": "DisallowS3PublicPolicy",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketWebsite",
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutAccountPublicAccessBlock"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "${GluePermissions}",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*/*aws-glue*/*"
+      ]
+    },
+    {
+      "Sid": "VolumeAllowCreateVolumeIfEncrypted",
+      "Effect": "Allow",
+      "Action": "ec2:CreateVolume",
+      "Resource": "arn:aws:ec2:*:*:volume/*",
+      "Condition": {
+        "Bool": {
+          "ec2:Encrypted": "true"
+        }
+      }
+    },
+    {
+      "Sid": "VolumeAllowAttachEncryptAndTag",
+      "Effect": "Allow",
+      "Action": "ec2:AttachVolume",
+      "Resource": "arn:aws:ec2:*:*:volume/*",
+      "Condition": {
+        "StringLike": {
+          "ec2:Encrypted": "true",
+          "ec2:ResourceTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "VolumeAllowAttachWithTag",
+      "Effect": "Allow",
+      "Action": "ec2:AttachVolume",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "StringLike": {
+          "ec2:ResourceTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "VolumeAllowWriteIfTagged",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DetachVolume",
+        "ec2:DeleteVolume"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "ec2:ResourceTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowAllResourceNoCondition",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:ImportVolume",
+        "ec2:CreateImage",
+        "ec2:CopyImage",
+        "ec2:DeregisterImage",
+        "ec2:CopySnapshot",
+        "ec2:ImportSnapshot",
+        "ec2:CreateSnapshot",
+        "ec2:ResetSnapshot*",
+        "ec2:ModifyVolume*",
+        "ec2:EnableVolumeIO"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowEBSSnapshotQ",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*Snapshot*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:RequestTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowEBSSnapshotS",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*Snapshot*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:ResourceTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowEFS",
+      "Effect": "${EFSPermissions}",
+      "Action": [
+        "elasticfilesystem:Backup",
+        "elasticfilesystem:Client*",
+        "elasticfilesystem:Create*",
+        "elasticfilesystem:Delete*",
+        "elasticfilesystem:Modify*",
+        "elasticfilesystem:Put*",
+        "elasticfilesystem:Restore*",
+        "elasticfilesystem:Tag*",
+        "elasticfilesystem:Untag*",
+        "elasticfilesystem:Update*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowFsx",
+      "Effect": "${FSxPermissions}",
+      "Action": [
+        "fsx:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowStorageGateway",
+      "Effect": "${StorageGatewayPermissions}",
+      "Action": [
+        "storagegateway:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowBackup",
+      "Effect": "${BackupPermissions}",
+      "Action": [
+        "backup-storage:*",
+        "backup:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowHSM",
+      "Effect": "${HSMPermissions}",
+      "Action": "cloudhsm:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/TeamCode": [
+            "${TeamCode}",
+            "${TeamName}"
+          ]
+        }
+      }
+    }
+  ]
+}
